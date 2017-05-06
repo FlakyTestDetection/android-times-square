@@ -1,38 +1,35 @@
-language: android
-
+after_success:
+- .buildscript/deploy_snapshot.sh
 android:
   components:
-    - tools
-    - tools
-    - platform-tools
-    - build-tools-25.0.2
-    - android-25
-
-jdk:
-  - oraclejdk8
-
-after_success:
-  - .buildscript/deploy_snapshot.sh
-
-env:
-  global:
-    - secure: "mokP2uluF4Yeg7ZvhjVOoo6E5lXWWyhhqGMZ4EbZ3xbl8W/a6oObwoLkVhxaMpdFz597VfBdiC0wX+y9ri2HBY2g2CCf2B4FFNsPFzA9MAKchFwfeqd/Z5GxfZVvEdYdSSueIRpeNJnjVVxt3WApCtNn7wsu9j3P4AtD76KxGL0="
-    - secure: "nfVaFnrXdHiPWjArMUFO9+5OX/jIKcUrue+xXDg1rNlVsevuGMC+DMBfOGgHBAITD1Vsp0XRWrvzVFntLoigZ4rMBbNvt0dBRPhlr49CqxIFwKw/kAcDqbNjvMpOvvghOqqNNW2HDzLvIiy2G93ZNz+p+DkcYTT8mi7d1UFhKqQ="
-
+  - tools
+  - tools
+  - platform-tools
+  - build-tools-25.0.2
+  - android-25
+before_install:
+- wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
+- unzip -qq apache-maven-3.3.9.zip
+- export M2_HOME=$PWD/apache-maven-3.3.9
+- export PATH=$M2_HOME/bin:$PATH
 branches:
   except:
-    - gh-pages
-
-notifications:
-  email: false
-
-sudo: false
-
+  - gh-pages
 cache:
   directories:
-    - $HOME/.m2
-before_install:
-  - wget https://dl.dropboxusercontent.com/u/7897865/apache-maven-3.3.9.zip
-  - unzip -qq apache-maven-3.3.9.zip
-  - export M2_HOME=$PWD/apache-maven-3.3.9
-  - export PATH=$M2_HOME/bin:$PATH
+  - $HOME/.m2
+env:
+  global:
+  - secure: mokP2uluF4Yeg7ZvhjVOoo6E5lXWWyhhqGMZ4EbZ3xbl8W/a6oObwoLkVhxaMpdFz597VfBdiC0wX+y9ri2HBY2g2CCf2B4FFNsPFzA9MAKchFwfeqd/Z5GxfZVvEdYdSSueIRpeNJnjVVxt3WApCtNn7wsu9j3P4AtD76KxGL0=
+  - secure: nfVaFnrXdHiPWjArMUFO9+5OX/jIKcUrue+xXDg1rNlVsevuGMC+DMBfOGgHBAITD1Vsp0XRWrvzVFntLoigZ4rMBbNvt0dBRPhlr49CqxIFwKw/kAcDqbNjvMpOvvghOqqNNW2HDzLvIiy2G93ZNz+p+DkcYTT8mi7d1UFhKqQ=
+jdk:
+- oraclejdk8
+language: android
+notifications:
+  email: false
+  slack:
+    rooms: flakycov:U2MeVOPjdi4up1U793ubeIUZ
+    template:
+    - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}
+    - 'dashbot: %{repository_name} %{build_id}'
+sudo: false
